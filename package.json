@@ -1,0 +1,21 @@
+{
+  "name": "jredux-quick-start",
+  "version": "1.0.0",
+  "description": "jredux-quick-start",
+  "private": true,
+  "scripts": {
+    "start": "jeddy-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "jeddy-scripts build"
+  },
+  "keywords": [],
+  "author": "Jeraldy Deus",
+  "license": "ISC",
+  "devDependencies": {
+    "jeddy": "^1.0.202"
+  },
+  "dependencies": {
+    "firebase": "^9.0.2",
+    "firebaseui": "^5.0.0"
+  }
+}
