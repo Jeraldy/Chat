@@ -1,8 +1,10 @@
 import { firebase } from '@firebase/app';
+import 'firebase/firestore';
 import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 import API_KEY from "./API_KEY";
-import { userIdentification } from "./Services/index";
+import { fetchUserInfo } from './Services/index';
+const IS_LIVE = true
 
 const DevConfig = () => {
     firebase.initializeApp(API_KEY.DEV);
@@ -12,7 +14,6 @@ const DevConfig = () => {
 
 const LiveConfig = () => {
     firebase.initializeApp(API_KEY.LIVE);
-    //firebase.analytics();
     const db = firebase.firestore()
     db.enablePersistence()
 }
@@ -35,21 +36,12 @@ const AuthConfig = () => {
     ui.start('#signIn', uiConfig);
 }
 
-async function registerSW() {
-    if ('serviceWorker' in navigator) {
-        try {
-            await navigator.serviceWorker.register('./serviceWorker.js');
-        } catch (e) {
-            console.log(`SW registration failed`);
-        }
-    }
-}
-
-const AuthCheck = () => {
+const Authenticate = () => {
     let initApp = function () {
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
-                userIdentification(user)
+                const { uid, phoneNumber } = user
+                fetchUserInfo({ uid, phoneNumber })
             } else {
                 AuthConfig()
             }
@@ -57,13 +49,9 @@ const AuthCheck = () => {
             console.log(error);
         });
     };
-    window.addEventListener('load', () => {
-        initApp()
-        //registerSW()
-    });
+    window.addEventListener('load', () => initApp());
 }
 
-const IS_LIVE = false
 
 export default () => {
     if (IS_LIVE) {
@@ -71,5 +59,5 @@ export default () => {
     } else {
         DevConfig()
     }
-    AuthCheck()
+    Authenticate()
 }

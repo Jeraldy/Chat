@@ -15,7 +15,7 @@
     "jeddy": "^1.0.202"
   },
   "dependencies": {
-    "firebase": "^9.0.2",
-    "firebaseui": "^5.0.0"
+    "firebase": "^8.2.6",
+    "firebaseui": "^4.7.3"
   }
 }
