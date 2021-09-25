@@ -107,12 +107,7 @@ const CreateUserInfo = ({ user, displayName }) => {
 
 const updateUserDiplyName = (displayName, user) => {
     if (displayName) {
-        createUser({ ...user, displayName })
-            .then(_ => {
-                window.location.reload()
-            }).catch(_ => {
-                alert('Ooops!..Something went wrong')
-            })
+        createUser({ ...user, displayName }).catch(_ => alert('Ooops!..Something went wrong'))
     }
 }
 

@@ -1,10 +1,15 @@
 import { createReducer } from "jeddy/jredux";
+import { genChatId } from "../Utils/index";
 
 const _reducer = createReducer({
     name: 'RUser',
     initialState: {
         user: null,
-        displayName: ""
+        contacts: [],
+        displayName: "",
+        searchedContact: {},
+        contactSearchStatus: "",
+        openSearchContactForm: false
     },
     reducers: {
         setUserInfo: (state, action) => {
@@ -22,6 +27,40 @@ const _reducer = createReducer({
                 }
             }
         },
+        setUserContacts: (state, action) => {
+            return { ...state, contacts: action.payload }
+        },
+        updateContactUnSeenMessages: (state, action) => {
+            const { uid, chatId, newMessages } = action.payload
+            let _contacts = [...state.contacts].map(c => {
+                if (genChatId(c.uid, uid) === chatId) {
+                    return { ...c, newMessages }
+                }
+                return c
+            })
+            return { ...state, contacts: _contacts }
+        },
+        updateContactLastMessage: (state, action) => {
+            const { uid, chatId, lastChat } = action.payload
+            let _contacts = [...state.contacts].map(c => {
+                if (genChatId(c.uid, uid) === chatId) {
+                    return { ...c, lastChat }
+                }
+                return c
+            })
+            return { ...state, contacts: _contacts }
+        },
+        setSearchedContact: (state, action) => {
+            return { ...state, searchedContact: action.payload }
+        },
+        searchContactStatus: (state, action) => {
+            return { ...state, contactSearchStatus: action.payload }
+        },
+        toggleSearchContactForm: (state) => {
+            return {
+                ...state, openSearchContactForm: !state.openSearchContactForm
+            }
+        }
     }
 })
 

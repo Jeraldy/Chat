@@ -84,10 +84,16 @@ export const chatDateSticky = () => {
     scrollEl.addEventListener('scroll', scroll);
 }
 
-export const scrollListerner = () => {
-    var scrollEl = document.getElementById("chat-list")
-    function scroll() {
-        // console.log(y)
+
+export const renderDate = (date) => {
+    if (isToDay(date)) {
+        return "TODAY"
+    } else if (isYestaday(date)) {
+        return "YESTERDAY"
     }
-    scrollEl.addEventListener('scroll', scroll);
+    return date
+}
+
+export const Emojis = () => {
+    return ['😂', '🙏', '❤️', '👏', '👍', '😭','🔥','💪']
 }

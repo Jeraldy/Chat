@@ -20,10 +20,11 @@ const ChatRoom = ({ selectedFriend, showActionBar }) => {
                     width: "99%",
                     backgroundColor: "#E5DDD5"
                 }
-            })
+            }),
         ]
     })
 }
+
 
 const mapStateToProps = (state) => {
     return {

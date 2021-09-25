@@ -25,7 +25,7 @@ const ChatBar = (selectedFriend) => {
                             }),
                             Avator(selectedFriend.image),
                             Div({
-                                children: [Center({ child: selectedFriend.fullName })],
+                                children: [Center({ child: selectedFriend.displayName })],
                                 style: { paddingLeft: "8px" }
                             })
                         ],
@@ -46,15 +46,15 @@ const ChatBar = (selectedFriend) => {
                     })
                 ],
                 align: RowAlign.SpaceBetween,
-                style: {
-                    padding: "10px",
-                    backgroundColor: Theme.Colors.LIGHT_GREY,
-                    position: "fixed",
-                    width: "100%",
-                    paddingLeft: "0px"
-                }
             })
-        ]
+        ],
+        style: {
+            padding: "10px",
+            position: "fixed",
+            width: "100%",
+            paddingLeft: "0px",
+            backgroundColor: "white"
+        }
     })
 }
 

@@ -14,9 +14,10 @@ import { actions } from "../../Reducers/RChatList";
 const { handleSelectedMessage, toggleActionBar } = actions
 
 const ChatBubble = ({ selectedMessages, showActionBar }, message, selectedFriend) => {
-    const left = message.sentBy == selectedFriend.userName
-    const selected = selectedMessages.includes(message.messageId)
+    const left = message.senderId == selectedFriend.uid
+    const selected = selectedMessages.filter(m => m.id == message.id).length == 1
     return Row({
+        id: message.id,
         children: [
             Bubble(message, left, selectedMessages),
             showActionBar ? Div({
@@ -24,8 +25,8 @@ const ChatBubble = ({ selectedMessages, showActionBar }, message, selectedFriend
                     Center({
                         child: Input({
                             type: "checkbox",
-                            onChange: () => dispatch(handleSelectedMessage(message.messageId)),
-                            checked: selectedMessages.includes(message.messageId)
+                            onChange: () => dispatch(handleSelectedMessage(message)),
+                            checked: selected
                         })
                     })
                 ]
@@ -47,7 +48,7 @@ function Bubble(message, left, selectedMessages) {
             Div({
                 children: [
                     DisplayMessage(message),
-                    message.extraContent ? Div({ children: renderMsg(message.extraContent) }) : null
+                    message.extraText ? Div({ children: renderMsg(message.extraText) }) : null
                 ],
                 style: { wordWrap: "break-word", overflowWrap: "break-word" }
             }),
@@ -61,7 +62,7 @@ function Bubble(message, left, selectedMessages) {
                         }
                     }),
                     Div({
-                        children: [message._createdAt ? `${message._createdAtHrs}` : "10:23 AM"],
+                        children: [message._createdAt ? `${message._createdAtHrs}` : ""],
                         style: {
                             color: "grey",
                             textAlign: "right",
@@ -78,11 +79,11 @@ function Bubble(message, left, selectedMessages) {
         style: {
             backgroundColor: left ? "white" : "#e3f2fd",
             maxWidth: "80%",
-            minWidth: "20%",
-            borderRadius: left ? "0 18px 18px 18px" : "18px 0 18px 18px",
+            minWidth: "45%",
+            borderRadius: left ? "0 8px 8px 8px" : "8px 0 8px 8px",
             padding: "8px",
             position: "relative"
-        }
+        },
     })
 }
 
@@ -90,29 +91,30 @@ function BubbleActions(message, selectedMessages) {
     if (selectedMessages.length > 0) {
         return
     }
-    return FlatButton({
+    return Div({
         children: [
-            Icon({ name: Icons.keyboard_arrow_down, })
-        ],
-        style: {
-            position: "absolute",
-            top: "-1px",
-            right: "0px",
-            color: "#ccc"
-        },
-        onClick: () => {
-            dispatch(toggleActionBar())
-            if (!selectedMessages.includes(message.messageId)) {
-                dispatch(handleSelectedMessage(message.messageId))
-            }
-        }
+            FlatButton({
+                children: [Icon({ name: Icons.keyboard_arrow_down, })],
+                style: {
+                    position: "absolute",
+                    top: "-6px",
+                    right: "-8px",
+                    color: "#ccc"
+                },
+                onClick: () => {
+                    dispatch(toggleActionBar())
+                    if (selectedMessages.filter(m => m.id == message.id).length == 0) {
+                        dispatch(handleSelectedMessage(message))
+                    }
+                }
+            })
+        ]
     })
 }
 
-const mapStateToProps = (state) => {
-    return {
-        selectedMessages: state.RChatList.selectedMessages,
-        showActionBar: state.RChatList.showActionBar
-    }
-}
+const mapStateToProps = (state) => ({
+    selectedMessages: state.RChatList.selectedMessages,
+    showActionBar: state.RChatList.showActionBar
+})
+
 export default connect(mapStateToProps)(ChatBubble)

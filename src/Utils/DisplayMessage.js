@@ -13,7 +13,7 @@ import { validURL, renderMsg } from "./index";
 import Span from "jeddy/dom/Span";
 
 const DisplayMessage = (message) => {
-    const messageType = message.messageType
+    const messageType = message.type
     if (messageType.includes("image")) {
         return FlatButton({
             children: [

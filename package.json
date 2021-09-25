@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "firebase": "^8.2.6",
-    "firebaseui": "^4.7.3"
+    "firebaseui": "^4.7.3",
+    "sweetalert": "^2.1.2"
   }
 }

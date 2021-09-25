@@ -13,11 +13,16 @@ $ npm install && npm start
 Then open: [http://localhost:9000/](http://localhost:9000/)
 
  - Actions
-    - reply
-    - delete
     - info
     - copy
     - foward
     - star
+    - Media Viewer *
+    - Message search
+    - User info update
+    - PWA
+    - Notifications *
+    - Computer view
+    - Status - later
  - Search
 

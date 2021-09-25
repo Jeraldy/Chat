@@ -7,15 +7,17 @@ import Icons from "jeddy/utils/Icons";
 import Center from "jeddy/layouts/Center";
 import FlatButton from "./FlatButton";
 import Theme from "./Theme";
+import PDF from "../Assets/pdf.png";
+import FILE_ICON from "../Assets/fileIcon.png";
 import { dispatch } from "jeddy/jredux";
 import { actions } from "../Reducers/RChatList";
+
 const { handleRepliedMessage } = actions
 
 export default (repliedMessage, showCancel) => {
     if (!repliedMessage) {
         return null
     }
-    const hasImage = repliedMessage.messageType.includes("image")
     return Row({
         children: [
             Div({
@@ -34,9 +36,9 @@ export default (repliedMessage, showCancel) => {
                 style: {
                     margin: "4px",
                     borderLeft: "4px solid #8e24aa",
-                    backgroundColor: "#fce4ec",//"#fafafa",
+                    backgroundColor: "#fce4ec",
                     padding: "2px",
-                    width: hasImage ? "calc(100% - 50px)" : "100%",
+                    width: "100%",
                     marginRight: 0,
                     height: "50px",
                     borderTopLeftRadius: "4px",
@@ -45,18 +47,6 @@ export default (repliedMessage, showCancel) => {
                     overflow: "hidden",
                 }
             }),
-            hasImage ? Img({
-                src: repliedMessage.content,
-                style: {
-                    margin: "4px",
-                    height: "52px",
-                    width: "50px",
-                    backgroundColor: "#ccc",
-                    marginLeft: 0,
-                    borderTopRightRadius: "4px",
-                    borderBottomRightRadius: "4px"
-                }
-            }) : null,
             showCancel ? FlatButton({
                 children: [
                     Center({
@@ -79,16 +69,30 @@ export default (repliedMessage, showCancel) => {
             }) : null
         ],
         align: RowAlign.SpaceBetween,
+        onClick: () => {
+           // dispatch(handleMsgSearchKeywords(""))
+            let el = document.getElementById(repliedMessage.id)
+            el.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
+            let ofs = 0;
+            let blinker = setInterval(function () {
+                el.style.backgroundColor = 'rgba(187, 222, 251,' + Math.abs(Math.sin(ofs)) + ')';
+                ofs += 0.01;
+                if (ofs > 5) {
+                    window.clearInterval(blinker)
+                    el.style.backgroundColor = ""
+                }
+            }, 5);
+        },
         style: { cursor: "pointer" }
     })
 }
 
 
 function ReplayContent(message) {
-    const { messageType, content, fileName } = message
-    if (messageType == "text") {
+    const { type, content, fileName } = message
+    if (type == "text") {
         return content
-    } else if (messageType.includes("image")) {
+    } else if (type.includes("image")) {
         return Row({
             children: [
                 Icon({
@@ -98,7 +102,7 @@ function ReplayContent(message) {
                 Div({ children: ["Photo"], style: { marginLeft: "8px" } })
             ],
         })
-    } else if (messageType.includes("video")) {
+    } else if (type.includes("video")) {
         return Row({
             children: [
                 Icon({
@@ -108,7 +112,7 @@ function ReplayContent(message) {
                 Div({ children: ["Video"], style: { marginLeft: "8px" } })
             ],
         })
-    } else if (messageType.includes("audio")) {
+    } else if (type.includes("audio")) {
         return Row({
             children: [
                 Icon({

@@ -2,12 +2,13 @@ import Div from "jeddy/dom/Div"
 import ChatListItem from "./ChatListItem"
 import { connect } from "jeddy/jredux"
 
-const ChatList = ({ friends }) => {
+const ChatList = ({ contacts }) => {
     return Div({
-        children: friends.map(friend => ChatListItem(friend))
+        id: "chat-list",
+        children: contacts.map(contact => ChatListItem(contact))
     })
 }
 
-const mapStateToProps = (state) => ({ friends: state.RChatList.friends })
+const mapStateToProps = (state) => ({ contacts: state.RUser.contacts })
 
 export default connect(mapStateToProps)(ChatList)

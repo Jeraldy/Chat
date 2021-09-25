@@ -7,17 +7,16 @@ import Icons from "jeddy/utils/Icons";
 import FlatButton from '../../Utils/FlatButton';
 import Card from "jeddy/widgets/Card";
 import Center from "jeddy/layouts/Center";
+import { connect } from 'jeddy/jredux';
 
-const ToolBar = () => {
+const ToolBar = ({ user }) => {
     return Card({
-        children:[
+        children: [
             Row({
                 children: [
                     Div({
-                        children: [Center({child:"Messages"})],
-                        style:{
-                            fontWeight: "bold"
-                        }
+                        children: [Center({ child: `${user.displayName}` })],
+                        style: { fontWeight: "bold" }
                     }),
                     Row({
                         children: [
@@ -31,14 +30,16 @@ const ToolBar = () => {
                     })
                 ],
                 align: RowAlign.SpaceBetween,
-                style:{
+                style: {
                     padding: "10px",
-                    backgroundColor: Theme.Colors.LIGHT_GREY
+                    backgroundColor: 'white'
                 }
             })
         ]
     })
 }
 
-export default ToolBar;
+const mapStateToProps = (state) => ({ ...state.RUser })
+
+export default connect(mapStateToProps)(ToolBar);
 

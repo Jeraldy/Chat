@@ -9,10 +9,12 @@ import Center from "jeddy/layouts/Center";
 import { dispatch, connect } from 'jeddy/jredux';
 import { actions } from '../../Reducers/RChatList';
 import Card from "jeddy/widgets/Card";
+import swal from 'sweetalert';
+import { deleteMessage, deleteMessageForAll } from '../../Services/index';
 const { toggleActionBar, handleRepliedMessage } = actions
 
-const ActionBar = ({ selectedMessages, messages }) => {
-    const selectedMessage = messages.filter(a => a.messageId == selectedMessages[0])[0]
+const ActionBar = ({ selectedMessages, user }) => {
+    const selectedMessage = selectedMessages[0] || {}
     return Card({
         children: [
             Row({
@@ -38,15 +40,19 @@ const ActionBar = ({ selectedMessages, messages }) => {
                                     dispatch(toggleActionBar())
                                 }
                             }) : null,
-                            FlatButton({
-                                children: [Icon({ name: Icons.star_border })],
-                            }),
+                            // FlatButton({
+                            //     children: [Icon({ name: Icons.bookmark_border })],
+                            //     onClick: () => {
+                            //         console.log("HELLO EVERY ONE...")
+                            //     }
+                            // }),
                             FlatButton({
                                 children: [Icon({ name: Icons.delete })],
+                                onClick: () => _deleteMessage(selectedMessages, user.uid)
                             }),
-                            FlatButton({
-                                children: [Icon({ name: Icons.content_copy })],
-                            }),
+                            // FlatButton({
+                            //     children: [Icon({ name: Icons.content_copy })],
+                            // }),
                             FlatButton({
                                 children: [
                                     Icon({
@@ -72,11 +78,63 @@ const ActionBar = ({ selectedMessages, messages }) => {
     })
 }
 
+function _deleteMessage(selectedMessages, uid) {
+    let isMyMessages = selectedMessages.filter(m => m.senderId == uid)
+
+    if (isMyMessages.length == selectedMessages.length) {
+        swal("Delete for YOU or ALL?", {
+            buttons: {
+                cancel: true,
+                catch: {
+                    text: "ME",
+                    value: "ME",
+                },
+                defeat: {
+                    text: "ALL",
+                    value: "ALL",
+                },
+            },
+        }).then((target) => {
+            switch (target) {
+                case "ALL":
+                    _delete(selectedMessages, target, uid)
+                    break;
+
+                case "ME":
+                    _delete(selectedMessages, target, uid);
+                    break;
+
+                default:
+                    break
+            }
+        });
+    } else {
+        _delete(selectedMessages, "ME", uid)
+    }
+}
+
+
+function _delete(selectedMessages, target, uid) {
+    swal("Are you sure?", {
+        buttons: ["CANCEL", "DELETE"],
+    }).then(value => {
+        if (value) {
+            selectedMessages.forEach(message => {
+                if (target == "ALL") {
+                    deleteMessageForAll(message)
+                } else {
+                    deleteMessage(message, uid)
+                }
+            })
+            dispatch(toggleActionBar(null))
+        }
+    });
+}
 
 const mapStateToProps = (state) => {
     return {
         selectedMessages: state.RChatList.selectedMessages,
-        messages: state.RChatList.messages
+        user: state.RUser.user
     }
 }
 export default connect(mapStateToProps)(ActionBar);
