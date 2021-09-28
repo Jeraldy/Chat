@@ -3,10 +3,8 @@ import Home from "./Widgets/Home/index";
 import ChatRoom from "./Widgets/ChatRoom/index";
 import LoginPage from "./Widgets/LoginPage";
 import CreateUserInfo from "./Widgets/CreateUserInfo";
-import { logOut } from "./Services/index";
 
 const App = ({ user, hasActiveChat }) => {
-    //logOut()
     if (!user) {
         return LoginPage()
     }

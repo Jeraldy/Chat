@@ -22,6 +22,7 @@ Then open: [http://localhost:9000/](http://localhost:9000/)
     - User info update
     - PWA
     - Notifications *
+    - Group *
     - Computer view
     - Status - later
  - Search

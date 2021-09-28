@@ -8,10 +8,9 @@ import { actions } from "../../Reducers/RChatList";
 import Avator from "../../Utils/Avator";
 import FlatButton from "../../Utils/FlatButton";
 import { fetchMessages, updateSeen } from "../../Services/index";
-import { genChatId, isToDay, isYestaday, updateScroll } from "../../Utils/index";
+import { genChatId, isToDay, isYestaday } from "../../Utils/index";
 import Icons from "jeddy/utils/Icons";
 import Icon from "jeddy/widgets/Icon";
-import UserAuth from "../../UserAuth";
 const { setSelectedFriend } = actions
 
 const ChatListItem = ({ user }, friend) => {

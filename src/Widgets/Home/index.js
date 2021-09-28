@@ -1,44 +1,22 @@
-import Div from "jeddy/dom/Div";
-import ToolBar from "../ToolBar/index";
-import ChatList from "../ChatList/index";
-import FlatButton from "../../Utils/FlatButton";
-import Icon from "jeddy/widgets/Icon";
-import Icons from "jeddy/utils/Icons";
-import Center from "jeddy/layouts/Center";
-import SearchContact from "./SearchContact";
-import { dispatch } from "jeddy/jredux";
-import { actions } from "../../Reducers/RUser";
-const { toggleSearchContactForm, setSearchedContact } = actions
+import { PAGE } from "../../Services/constants";
+import CreateGroup from "../ToolBar/CreateGroup";
+import ContactList from "./ContactList";
+import { connect } from "jeddy/jredux";
+import CreateGroup2 from "../ToolBar/CreateGroup2";
 
-export default () => {
-    return Div({
-        children: [
-            ToolBar(),
-            ChatList(),
-            Fab(),
-            SearchContact()
-        ],
-        style: { position: "relative", height: "100%" }
-    })
+
+const Home = ({ activePage }) => {
+    return MainContent(activePage)
 }
 
-function Fab() {
-    return FlatButton({
-        children: [
-            Center({ child: Icon({ name: Icons.message }) })
-        ],
-        style: {
-            position: "absolute",
-            bottom: "13px",
-            right: "13px",
-            borderRadius: "100%",
-            backgroundColor: "#1e88e5",
-            padding: "10px",
-            color: "white"
-        },
-        onClick: () => {
-            dispatch(setSearchedContact({}))
-            dispatch(toggleSearchContactForm())
-        }
-    })
+function MainContent(page) {
+    switch (page) {
+        case PAGE.CREATE_GROUP:
+            return CreateGroup()
+        case PAGE.CREATE_GROUP2:
+            return CreateGroup2()
+    }
+    return ContactList()
 }
+
+export default connect((state) => ({ ...state.RUI }))(Home);

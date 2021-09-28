@@ -4,12 +4,39 @@ import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 import API_KEY from "./API_KEY";
 import { fetchUserInfo } from './Services/index';
+//import { getMessaging } from 'firebase/messaging/sw';
+
 const IS_LIVE = true
 
 const DevConfig = () => {
-    firebase.initializeApp(API_KEY.DEV);
+    const app = firebase.initializeApp(API_KEY.DEV);
+   // getMessaging(app);
     const db = firebase.firestore()
     db.enablePersistence()
+}
+
+async function saveMessagingDeviceToken() {
+    try {
+        const currentToken = await getToken(getMessaging());
+        if (currentToken) {
+            console.log('Got FCM device token:', currentToken);
+        } else {
+            requestNotificationsPermissions();
+        }
+    } catch (error) {
+        console.error('Unable to get messaging token.', error);
+    };
+}
+
+async function requestNotificationsPermissions() {
+    console.log('Requesting notifications permission...');
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        await saveMessagingDeviceToken();
+    } else {
+        console.log('Unable to get permission to notify.');
+    }
 }
 
 const LiveConfig = () => {
@@ -40,6 +67,7 @@ const Authenticate = () => {
     let initApp = function () {
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
+                //saveMessagingDeviceToken();
                 const { uid, phoneNumber } = user
                 fetchUserInfo({ uid, phoneNumber })
             } else {
