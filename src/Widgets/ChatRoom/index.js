@@ -25,13 +25,9 @@ const ChatRoom = ({ selectedFriend, showActionBar }) => {
     })
 }
 
-
-const mapStateToProps = (state) => {
-    return {
-        selectedFriend: state.RChatList.selectedFriend,
-        showActionBar: state.RChatList.showActionBar
-    }
-}
+const mapStateToProps = (state) => ({
+    selectedFriend: state.RChatList.selectedFriend,
+    showActionBar: state.RChatList.showActionBar
+})
 
 export default connect(mapStateToProps)(ChatRoom)
-

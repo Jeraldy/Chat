@@ -8,10 +8,12 @@ class Main extends StatefulWidget {
     constructor(props) {
         super(props)
     }
+
     connectedCallBack() {
         updateState(this)
         UserAuth()
     }
+    
     render() { return App() }
 }
 

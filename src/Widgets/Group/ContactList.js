@@ -42,7 +42,7 @@ function ContactItem(contact, selectedMembers) {
                     selected ? Icon({
                         name: Icons.done,
                         style: {
-                            color: "#1e88e5",
+                            color: Theme.Colors.PRIMARY,
                         }
                     }) : null
                 ],

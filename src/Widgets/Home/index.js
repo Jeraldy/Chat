@@ -1,22 +1,17 @@
-import { PAGE } from "../../Services/constants";
-import CreateGroup from "../ToolBar/CreateGroup";
 import ContactList from "./ContactList";
 import { connect } from "jeddy/jredux";
-import CreateGroup2 from "../ToolBar/CreateGroup2";
+import Center from "jeddy/layouts/Center";
 
-
-const Home = ({ activePage }) => {
-    return MainContent(activePage)
+const Home = ({ hasContacts }) => {
+    return hasContacts ? ContactList() : NoContacts()
 }
 
-function MainContent(page) {
-    switch (page) {
-        case PAGE.CREATE_GROUP:
-            return CreateGroup()
-        case PAGE.CREATE_GROUP2:
-            return CreateGroup2()
-    }
-    return ContactList()
+const NoContacts = () => {
+    return Center({ child: "No contacts yet!" })
 }
 
-export default connect((state) => ({ ...state.RUI }))(Home);
+const mapStateToProps = (state) => ({
+    hasContacts: state.RUser.contacts.length || state.RGroup.groups.length
+})
+
+export default connect(mapStateToProps)(Home);

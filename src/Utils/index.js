@@ -1,7 +1,7 @@
 import DEFAULT_PROFILE_PICTURE from "../Assets/profile.png";
 import Html from "jeddy/utils/Html";
-
 export const PROFILE_PICTURE = DEFAULT_PROFILE_PICTURE;
+
 export const randomId = (length = 10) => {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -50,7 +50,6 @@ export const isYestaday = (date) => {
     return `${mo} ${pad(d.getDate())}, ${d.getFullYear()}` == date
 }
 
-
 export const updateScroll = () => {
     setTimeout(() => {
         try {
@@ -84,7 +83,6 @@ export const chatDateSticky = () => {
     scrollEl.addEventListener('scroll', scroll);
 }
 
-
 export const renderDate = (date) => {
     if (isToDay(date)) {
         return "TODAY"
@@ -95,5 +93,65 @@ export const renderDate = (date) => {
 }
 
 export const Emojis = () => {
-    return ['😂', '🙏', '❤️', '👏', '👍', '😭','🔥','💪']
+    return ['😂', '🙏', '❤️', '👏', '👍', '😭', '🔥', '💪']
+}
+
+export const sanitizeDates = (item) => {
+    try {
+        item.seenMembers = item.seenMembers.map((m) => {
+            let _date = m.seenAt
+            m.seenAt = toSringDate(_date)
+            m.seenAtHrs = new Date(_date).toLocaleString('en-US', {
+                hour: 'numeric', minute: 'numeric', hour12: true
+            })
+            return m
+        })
+        let date = item.createdAt.toDate()
+        item._createdAt = toSringDate(date)
+        item._createdAt2 = convertDate(date)
+        item._createdAtHrs = date.toLocaleString('en-US', {
+            hour: 'numeric', minute: 'numeric', hour12: true
+        })
+        delete item.createdAt
+    } catch (e) { }
+    return item;
+}
+
+export const getRandomArbitrary = (min, max) => {
+    return Math.random() * (max - min) + min;
+}
+
+export const randomColor = () => {
+    const colors = ["#00A8F2", "#1e88e5", "#c62828", "#ad1457", "#6a1b9a",
+        "#4527a0", "#283593", "#1565c0", "#039be5", "#00acc1", "#00897b", "#ef6c00", "#f4511e",
+        "#546e7a"
+    ]
+    let index = parseInt(getRandomArbitrary(0, colors.length))
+    return colors[index]
+}
+
+let stableColors = {}
+export const getStableColor = (key) => {
+    if (stableColors[key]) {
+        return stableColors[key]
+    }
+    let color = randomColor()
+    stableColors[key] = color
+    return color
+}
+
+export const scrollToMessage=(message)=>{
+    let el = document.getElementById(message.id)
+    if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
+        let ofs = 0;
+        let blinker = setInterval(function () {
+            el.style.backgroundColor = 'rgba(187, 222, 251,' + Math.abs(Math.sin(ofs)) + ')';
+            ofs += 0.01;
+            if (ofs > 5) {
+                window.clearInterval(blinker)
+                el.style.backgroundColor = ""
+            }
+        }, 5);
+    }
 }

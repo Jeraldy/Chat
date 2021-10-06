@@ -11,17 +11,41 @@ import Div from "jeddy/dom/Div";
 import FlatButton from "./FlatButton";
 import { validURL, renderMsg } from "./index";
 import Span from "jeddy/dom/Span";
+import Loader from "./Loader";
+import { dispatch } from "jeddy/jredux";
+import { PAGE } from "../Services/constants";
+import { actions } from "../Reducers/RUI";
+import { actions as GallaryActions } from "../Reducers/RGallary";
+
+const { setActivePage } = actions
+const { setSelectedMessage } = GallaryActions
 
 const DisplayMessage = (message) => {
     const messageType = message.type
+    if (messageType == "text") {
+        if (validURL(message.content)) {
+            return A({
+                children: [message.content],
+                href: message.content
+            })
+        }
+        return Span({ children: renderMsg(message.content) })
+    }
+
+    if (message.content == "FILE_LOADER") {
+        return FlatButton({
+            children: [Loader()],
+            style: { padding: 0, margin: 0 }
+        })
+    }
+
     if (messageType.includes("image")) {
         return FlatButton({
-            children: [
-                Img({
-                    src: message.content,
-                    width: "100%"
-                })
-            ],
+            children: [Img({ src: message.content, width: "100%" })],
+            onClick: () => {
+                dispatch(setSelectedMessage(message))
+                dispatch(setActivePage(PAGE.IMAGE_VIEW))
+            },
             style: { padding: 0, margin: 0 }
         })
     } else if (messageType.includes("video")) {
@@ -29,13 +53,9 @@ const DisplayMessage = (message) => {
             width: "100%",
             controls: "controls",
             children: [
-                Source({
-                    src: message.content,
-                    type: message.type
-                })
+                Source({ src: message.content, type: message.type })
             ]
         })
-
     } else if (messageType.includes("audio")) {
         return Audio({
             width: "100%",
@@ -45,14 +65,6 @@ const DisplayMessage = (message) => {
             ],
             style: { outline: 0 }
         })
-    } else if (messageType == "text") {
-        if (validURL(message.content)) {
-            return A({
-                children: [message.content],
-                href: message.content
-            })
-        }
-        return Span({ children: renderMsg(message.content) })
     }
     return Row({
         children: [
@@ -66,15 +78,10 @@ const DisplayMessage = (message) => {
                     A({
                         children: [message.fileName || "File"],
                         href: message.content,
-                        style: {
-                            textDecoration: "none",
-                            paddingLeft: "8px"
-                        }
+                        style: { textDecoration: "none", paddingLeft: "8px" }
                     })
                 ],
-                style: {
-                    width: "calc(100%-20px)",
-                }
+                style: { width: "calc(100%-20px)", }
             })
         ],
         align: RowAlign.SpaceEvenly,

@@ -14,14 +14,35 @@ const RChatList = createReducer({
         isUploading: "",
         textMessage: "",
         showEmoj: false,
-        showScrollDown: false
+        showScrollDown: false,
+        searchQuery: "",
+        fowardMessages: [],
+        fowardMessageRecipients: []
     },
     reducers: {
         setSelectedFriend: (state, action) => {
             return { ...state, selectedFriend: action.payload, }
         },
+        setFowardMessage: (state, action) => {
+            return { ...state, fowardMessages: action.payload, }
+        },
+        setFowardMessageRecipient: (state, action) => {
+            let _selectedMembers = [...state.fowardMessageRecipients]
+            const uid = action.payload.uid
+            const isNewMember = _selectedMembers
+                .filter(a => a.uid == uid).length == 0
+            if (isNewMember) {
+                _selectedMembers.push(action.payload)
+            } else {
+                _selectedMembers = _selectedMembers.filter(a => a.uid != uid)
+            }
+            return { ...state, fowardMessageRecipients: _selectedMembers, }
+        },
         handleTextMessage: (state, action) => {
             return { ...state, textMessage: action.payload, }
+        },
+        handleSearchQuery: (state, action) => {
+            return { ...state, searchQuery: action.payload, }
         },
         handleRepliedMessage: (state, action) => {
             return { ...state, repliedMessage: action.payload, fileToUpload: null }

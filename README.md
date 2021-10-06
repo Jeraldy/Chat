@@ -15,7 +15,6 @@ Then open: [http://localhost:9000/](http://localhost:9000/)
  - Actions
     - info
     - copy
-    - foward
     - star
     - Media Viewer *
     - Message search
@@ -25,5 +24,8 @@ Then open: [http://localhost:9000/](http://localhost:9000/)
     - Group *
     - Computer view
     - Status - later
- - Search
+    - Search my messages
+    - Search in create group
+    - Paginated Query
+    
 

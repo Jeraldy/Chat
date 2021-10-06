@@ -11,7 +11,8 @@ import { actions } from "../../Reducers/RChatList"
 import TextArea from "jeddy/dom/TextArea";
 import ReplyMessageUI from "../../Utils/ReplyMessageUI"
 import { genChatId, updateScroll, Emojis } from "../../Utils/index"
-import { sendMessage, updateNewMessage, uploadFile, addMyContact, addToMyContact, addToTheirContact } from "../../Services/index"
+import { sendMessage, addToMyContact, addToTheirContact, sendMessageWithFile } from "../../Services/index"
+import Theme from "../../Utils/Theme"
 
 const {
     handleTextMessage,
@@ -46,12 +47,11 @@ const MessageBox = ({ user, repliedMessage, showEmoj,
                         style: {
                             width: "100%",
                             outline: 0,
-                            paddingTop: "8px",
-                            paddingLeft: "15px",
+                            paddingTop: "14px",
                             border: 0,
                             overflow: "hidden",
                             resize: "none",
-                            height: "25px",
+                            height: "30px",
                         },
                         placeholder: "Type a message",
                         onKeyUp: (e) => {
@@ -60,7 +60,24 @@ const MessageBox = ({ user, repliedMessage, showEmoj,
                         },
                     }),
                     FlatButton({
-                        children: [Icon({ name: Icons.send })],
+                        children: [
+                            Label({
+                                for: "attach-file",
+                                children: [
+                                    Icon({
+                                        name: Icons.attach_file,
+                                        style: {
+                                            transform: 'rotate(45deg)',
+                                            cursor: "pointer",
+                                            //color: "#BF962D"
+                                        }
+                                    })
+                                ],
+                            })
+                        ]
+                    }),
+                    FlatButton({
+                        children: [Icon({ name: Icons.send,style: {color: Theme.Colors.PRIMARY} })],
                         onClick: () => {
                             let input = document.getElementById("message")
                             let textMessage = input.value
@@ -81,7 +98,7 @@ const MessageBox = ({ user, repliedMessage, showEmoj,
                             }
                             input.focus()
                             input.value = ""
-                        }
+                        },
                     })
                 ],
                 align: RowAlign.SpaceBetween,
@@ -110,7 +127,7 @@ const MessageBox = ({ user, repliedMessage, showEmoj,
             bottom: 0,
             width: "calc(100% - 10px)",
             backgroundColor: "white",
-            borderRadius: "20px",
+            borderRadius: "30px",
             margin: "5px",
         }
     })
@@ -163,7 +180,7 @@ function commitMessage(message, user, selectedContact, repliedMessage) {
 
 function commitMessageWithFile(message, user, selectedContact, repliedMessage) {
     if (selectedContact.type == "group") {
-        uploadFile(
+        sendMessageWithFile(
             SELECTED_FILE,
             {
                 senderId: user.uid,
@@ -177,7 +194,7 @@ function commitMessageWithFile(message, user, selectedContact, repliedMessage) {
             }
         )
     } else {
-        uploadFile(
+        sendMessageWithFile(
             SELECTED_FILE,
             {
                 senderId: user.uid,
@@ -237,30 +254,15 @@ function LeftActions(showEmoj) {
                 children: [
                     FlatButton({
                         children: [
-                            showEmoj ? Icon({ name: Icons.keyboard_arrow_down }) : "🙂"
+                            showEmoj ?
+                             Icon({ name: Icons.keyboard_arrow_down }) : 
+                             Icon({ name: Icons.mood }) //"🙂"
                         ],
                         style: { fontSize: "18px" },
                         onClick: () => {
                             dispatch(toggleEmojiKeyboard())
                             document.getElementById("message").focus()
                         }
-                    }),
-                    FlatButton({
-                        children: [
-                            Label({
-                                for: "attach-file",
-                                children: [
-                                    Icon({
-                                        name: Icons.attach_file,
-                                        style: {
-                                            transform: 'rotate(45deg)',
-                                            cursor: "pointer",
-                                            //color: "#BF962D"
-                                        }
-                                    })
-                                ],
-                            })
-                        ]
                     }),
                 ]
             }),

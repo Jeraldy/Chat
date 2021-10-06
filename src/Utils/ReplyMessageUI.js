@@ -11,6 +11,7 @@ import PDF from "../Assets/pdf.png";
 import FILE_ICON from "../Assets/fileIcon.png";
 import { dispatch } from "jeddy/jredux";
 import { actions } from "../Reducers/RChatList";
+import { scrollToMessage } from "./index";
 
 const { handleRepliedMessage } = actions
 
@@ -69,20 +70,7 @@ export default (repliedMessage, showCancel) => {
             }) : null
         ],
         align: RowAlign.SpaceBetween,
-        onClick: () => {
-           // dispatch(handleMsgSearchKeywords(""))
-            let el = document.getElementById(repliedMessage.id)
-            el.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
-            let ofs = 0;
-            let blinker = setInterval(function () {
-                el.style.backgroundColor = 'rgba(187, 222, 251,' + Math.abs(Math.sin(ofs)) + ')';
-                ofs += 0.01;
-                if (ofs > 5) {
-                    window.clearInterval(blinker)
-                    el.style.backgroundColor = ""
-                }
-            }, 5);
-        },
+        onClick: () => scrollToMessage(repliedMessage),
         style: { cursor: "pointer" }
     })
 }

@@ -2,7 +2,7 @@ import Div from "jeddy/dom/Div"
 import Row from "jeddy/layouts/Row"
 import RowAlign from "jeddy/layouts/RowAlign"
 import DisplayMessage from "../../Utils/DisplayMessage"
-import { renderMsg } from "../../Utils/index"
+import { renderMsg, getStableColor } from "../../Utils/index"
 import Icons from "jeddy/utils/Icons"
 import Icon from "jeddy/widgets/Icon";
 import ReplyMessageUI from "../../Utils/ReplyMessageUI"
@@ -13,8 +13,8 @@ import { connect, dispatch } from "jeddy/jredux"
 import { actions } from "../../Reducers/RChatList";
 const { handleSelectedMessage, toggleActionBar } = actions
 
-const ChatBubble = ({ selectedMessages, showActionBar }, message, selectedFriend) => {
-    const left = message.senderId == selectedFriend.uid
+const ChatBubble = ({ selectedMessages, showActionBar, user }, message) => {
+    const left = message.senderId != user.uid
     const selected = selectedMessages.filter(m => m.id == message.id).length == 1
     return Row({
         id: message.id,
@@ -43,6 +43,8 @@ const ChatBubble = ({ selectedMessages, showActionBar }, message, selectedFriend
 function Bubble(message, left, selectedMessages) {
     return Div({
         children: [
+            SenderInfo(left, message),
+            FowardedInfo(message),
             BubbleActions(message, selectedMessages),
             ReplyMessageUI(message.repliedMessage),
             Div({
@@ -54,7 +56,7 @@ function Bubble(message, left, selectedMessages) {
             }),
             Row({
                 children: [
-                    left ? null : Icon({
+                    left ? Div() : Icon({
                         name: message._createdAt ? Icons.done_all : Icons.done,
                         style: {
                             fontSize: "12px",
@@ -77,13 +79,71 @@ function Bubble(message, left, selectedMessages) {
             }),
         ],
         style: {
-            backgroundColor: left ? "white" : "#e3f2fd",
+            backgroundColor: left ? "white" : "#DCF8C6",
             maxWidth: "80%",
             minWidth: "45%",
             borderRadius: left ? "0 8px 8px 8px" : "8px 0 8px 8px",
             padding: "8px",
             position: "relative"
         },
+    })
+}
+
+function SenderInfo(left, message) {
+    return left ? Row({
+        children: [
+            Div({
+                children: [`${message.senderPhone}`],
+                style: {
+                    color: getStableColor(message.senderPhone),
+                    fontWeight: "bold"
+                }
+            }),
+            Div({
+                children: [`~${message.senderName}`],
+                style: {
+                    paddingLeft: "10px",
+                    fontStyle: "italic",
+                    color: "#bdbdbd"
+                }
+            }),
+        ],
+        align: RowAlign.SpaceBetween,
+        style: {
+            marginTop: "-4px",
+            fontSize: "12px",
+            marginBottom: "5px",
+            paddingRight: "8px"
+        }
+    }) : null
+}
+
+function FowardedInfo(message) {
+    if (!message.forwarded) {
+        return
+    }
+    let color = "#b0bec5"
+    return Row({
+        children: [
+            Div({
+                children: [
+                    Icon({
+                        name: Icons.reply,
+                        style: { transform: "scale(-1, 1)", color, fontSize: "12px", }
+                    })
+                ]
+            }),
+            Div({
+                children: ["Forwarded"],
+                style: { fontWeight: "bold", fontStyle: "italic", color }
+            }),
+        ],
+        style: {
+            marginTop: "-4px",
+            fontSize: "12px",
+            marginBottom: "5px",
+            paddingRight: "8px"
+        }
     })
 }
 
@@ -114,7 +174,8 @@ function BubbleActions(message, selectedMessages) {
 
 const mapStateToProps = (state) => ({
     selectedMessages: state.RChatList.selectedMessages,
-    showActionBar: state.RChatList.showActionBar
+    showActionBar: state.RChatList.showActionBar,
+    user: state.RUser.user
 })
 
 export default connect(mapStateToProps)(ChatBubble)

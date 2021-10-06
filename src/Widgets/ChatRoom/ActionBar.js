@@ -8,11 +8,16 @@ import FlatButton from '../../Utils/FlatButton';
 import Center from "jeddy/layouts/Center";
 import { dispatch, connect } from 'jeddy/jredux';
 import { actions } from '../../Reducers/RChatList';
+import { actions as UIActions } from "../../Reducers/RUI";
 import Card from "jeddy/widgets/Card";
 import swal from 'sweetalert';
+import { PAGE } from "../../Services/constants";
 import { deleteMessage, deleteMessageForAll } from '../../Services/index';
-const { toggleActionBar, handleRepliedMessage } = actions
 
+const { toggleActionBar, handleRepliedMessage, setFowardMessage } = actions
+const { setActivePage } = UIActions
+
+const style = { color: "white" }
 const ActionBar = ({ selectedMessages, user }) => {
     const selectedMessage = selectedMessages[0] || {}
     return Card({
@@ -22,19 +27,19 @@ const ActionBar = ({ selectedMessages, user }) => {
                     Row({
                         children: [
                             FlatButton({
-                                children: [Icon({ name: Icons.close })],
+                                children: [Icon({ name: Icons.close, style })],
                                 onClick: () => dispatch(toggleActionBar(null))
                             }),
                             Div({
                                 children: [Center({ child: `${selectedMessages.length}` })],
-                                style: { paddingLeft: "8px" }
+                                style: { paddingLeft: "8px", ...style }
                             })
                         ],
                     }),
                     Row({
                         children: [
                             selectedMessages.length == 1 ? FlatButton({
-                                children: [Icon({ name: Icons.reply })],
+                                children: [Icon({ name: Icons.reply, style })],
                                 onClick: () => {
                                     dispatch(handleRepliedMessage(selectedMessage))
                                     dispatch(toggleActionBar())
@@ -47,7 +52,7 @@ const ActionBar = ({ selectedMessages, user }) => {
                             //     }
                             // }),
                             FlatButton({
-                                children: [Icon({ name: Icons.delete })],
+                                children: [Icon({ name: Icons.delete, style })],
                                 onClick: () => _deleteMessage(selectedMessages, user.uid)
                             }),
                             // FlatButton({
@@ -57,10 +62,15 @@ const ActionBar = ({ selectedMessages, user }) => {
                                 children: [
                                     Icon({
                                         name: Icons.reply,
-                                        style: { transform: "scale(-1, 1)" }
+                                        style: { transform: "scale(-1, 1)", ...style }
                                     })
                                 ],
-                                style: { marginRight: "10px", }
+                                style: { marginRight: "10px", },
+                                onClick: () => {
+                                    dispatch(setActivePage(PAGE.FOWARD_MESSAGE))
+                                    dispatch(toggleActionBar())
+                                    dispatch(setFowardMessage(selectedMessages))
+                                }
                             }),
                         ]
                     })
@@ -68,19 +78,18 @@ const ActionBar = ({ selectedMessages, user }) => {
                 align: RowAlign.SpaceBetween,
                 style: {
                     padding: "10px",
-                    backgroundColor: Theme.Colors.LIGHT_GREY,
+                    backgroundColor: Theme.Colors.PRIMARY,
                     position: "fixed",
                     width: "100%",
                     paddingLeft: "0px"
                 }
             })
-        ]
+        ],
     })
 }
 
 function _deleteMessage(selectedMessages, uid) {
     let isMyMessages = selectedMessages.filter(m => m.senderId == uid)
-
     if (isMyMessages.length == selectedMessages.length) {
         swal("Delete for YOU or ALL?", {
             buttons: {
@@ -112,7 +121,6 @@ function _deleteMessage(selectedMessages, uid) {
         _delete(selectedMessages, "ME", uid)
     }
 }
-
 
 function _delete(selectedMessages, target, uid) {
     swal("Are you sure?", {

@@ -13,15 +13,13 @@ import { updateSeen } from "../../Services/index"
 
 const { updateScrollHeight } = actions
 
-const MessageList = ({ messages, selectedFriend, showEmoj, showScrollDown }) => {
+const MessageList = ({ messages, showEmoj, showScrollDown, user }) => {
     let date = ""
     if (messages.length > 0) {
         date = messages[0]._createdAt
     }
-    const newMessages = messages
-        .filter(message => message.seen == false
-            && message.senderId == selectedFriend.uid)
-    updateSeen(newMessages)
+    const newMessages = filter(messages, user)
+    updateSeen(newMessages, user)
     return Div({
         id: "chat-list",
         children: [...[].concat.apply([],
@@ -35,7 +33,7 @@ const MessageList = ({ messages, selectedFriend, showEmoj, showScrollDown }) => 
                             date ? Div({
                                 children: [`${renderDate(date)}`.toUpperCase()],
                                 style: {
-                                    backgroundColor: "#b2ebf2",
+                                    backgroundColor: "#E1F3FB",
                                     padding: "6px",
                                     borderRadius: "4px",
                                     width: "150px",
@@ -46,14 +44,14 @@ const MessageList = ({ messages, selectedFriend, showEmoj, showScrollDown }) => 
                         style: {
                             padding: "8px",
                             position: "sticky",
-                            top: '-8px',
+                            top: '-6px',
                             zIndex: 10,
                         },
                         align: RowAlign.Center,
                     }),
-                    ChatBubble(message, selectedFriend)]
+                    ChatBubble(message)]
                 }
-                return [ChatBubble(message, selectedFriend)]
+                return [ChatBubble(message)]
             })
         ),
         showScrollDown ? ScrollDown() : null],
@@ -64,10 +62,12 @@ const MessageList = ({ messages, selectedFriend, showEmoj, showScrollDown }) => 
             width: "100%",
             overflowY: "scroll"
         },
-        onScroll: (e) => {
-
-        }
     })
+}
+
+function filter(messages, user) {
+    return messages.filter(message => message.unSeenMembers.includes(user.uid)
+        && message.senderId != user.uid)
 }
 
 function ScrollDown() {
@@ -96,7 +96,8 @@ const mapStateToProps = (state) => ({
     messages: state.RChatList.messages,
     showEmoj: state.RChatList.showEmoj,
     selectedFriend: state.RChatList.selectedFriend,
-    showScrollDown: state.RChatList.showScrollDown
+    showScrollDown: state.RChatList.showScrollDown,
+    user: state.RUser.user
 })
 
 export default connect(mapStateToProps)(MessageList)

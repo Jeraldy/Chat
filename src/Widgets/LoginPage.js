@@ -16,8 +16,6 @@ const LoginPage = () => {
             height: "100%",
             width: "100%",
             backgroundColor: "white",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
         }
     })
 }

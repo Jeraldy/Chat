@@ -4,13 +4,11 @@ import * as firebaseui from 'firebaseui'
 import 'firebaseui/dist/firebaseui.css'
 import API_KEY from "./API_KEY";
 import { fetchUserInfo } from './Services/index';
-//import { getMessaging } from 'firebase/messaging/sw';
 
 const IS_LIVE = true
 
 const DevConfig = () => {
-    const app = firebase.initializeApp(API_KEY.DEV);
-   // getMessaging(app);
+    firebase.initializeApp(API_KEY.DEV);
     const db = firebase.firestore()
     db.enablePersistence()
 }
@@ -80,6 +78,15 @@ const Authenticate = () => {
     window.addEventListener('load', () => initApp());
 }
 
+async function registerSW() {
+    if ('serviceWorker' in navigator) {
+        try {
+            await navigator.serviceWorker.register('./serviceWorker.js');
+        } catch (e) {
+            console.log(`SW registration failed`);
+        }
+    }
+}
 
 export default () => {
     if (IS_LIVE) {
@@ -88,4 +95,5 @@ export default () => {
         DevConfig()
     }
     Authenticate()
+    registerSW()
 }

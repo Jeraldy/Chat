@@ -9,25 +9,17 @@ import { dispatch, connect } from "jeddy/jredux";
 import { actions } from "../../Reducers/RUI";
 import { actions as groupActions } from "../../Reducers/RGroup";
 import { PAGE } from "../../Services/constants";
+import ContactList from "./ContactList";
 import Center from "jeddy/layouts/Center";
 import Avator from "../../Utils/Avator";
 import Theme from "../../Utils/Theme";
-import Input from "jeddy/dom/Input";
-import Label from "jeddy/dom/Label";
-import Hr from "jeddy/dom/Hr";
-
 const { setActivePage } = actions
 const { addNewMember } = groupActions
 
-const CreateGroup2 = ({ selectedMembers }) => {
+const CreateGroupStep1 = ({ selectedMembers }) => {
     return Div({
         children: [
-            ActionBar(selectedMembers),
-            Form(),
-            Div({
-                children: [`Participants: ${selectedMembers.length}`],
-                style: { padding: "8px" }
-            }),
+            ActionBar(),
             Div({
                 children: [
                     Row({
@@ -36,64 +28,15 @@ const CreateGroup2 = ({ selectedMembers }) => {
                         wrapContent: true
                     })
                 ],
-                style: { height: "70vh", overflowY: "scroll" }
+                style: { maxHeight: "30vh", overflowY: "scroll" }
             }),
-            Fab()
+            ContactList(),
+            selectedMembers.length > 0 ? Fab() : null
         ],
-        style: { position: "relative", height: "100%", backgroundColor: Theme.Colors.LIGHT_GREY }
+        style: { position: "relative", height: "100%" }
     })
 }
-
-function Form() {
-    return Row({
-        children: [
-            Label({
-                children: [
-                    Row({
-                        children: [Avator()],
-                        align: RowAlign.Center
-                    })
-                ],
-                style: { cursor: "pointer" },
-                for: "group-profile"
-            }),
-            Input({
-                type: "text",
-                placeholder: "Group name",
-                style: {
-                    border: "1px solid #ccc",
-                    outline: 0,
-                    padding: "8px",
-                    marginLeft: "10px",
-                    borderRadius: "8px",
-                    width: "90%"
-                }
-            }),
-            Input({
-                type: "file",
-                accept: "image/*",
-                id: "group-profile",
-                style: { visibility: "hidden", width: "2px" },
-                onChange: (e) => {
-                    // if (e.target.files.length > 0) {
-                    //     let file = e.target.files[0]
-                    //     let extension = file.name.split('.').pop()
-                    //     if (extension.toLowerCase() == "png" || extension.toLowerCase() == "jpg") {
-                    //         uploadProfilePicture(file, user)
-                    //     } else {
-                    //         swal("You can upload .png or .jpg only!")
-                    //     }
-                    // }
-                }
-            }),
-        ],
-        style: {
-            padding: "8px",
-            backgroundColor: "#fff",
-            marginTop: "8px"
-        }
-    })
-}
+const mapStateToProps = (state) => ({ ...state.RGroup })
 
 function SeletedItem(member) {
     return Row({
@@ -105,12 +48,12 @@ function SeletedItem(member) {
                             Avator(member.photo),
                             CloseButton(member)
                         ],
-                        style: { position: "relative", width: "60px" }
+                        style: { position: "relative", width: "60px", }
                     }),
                     Row({
                         children: [member.displayName],
                         align: RowAlign.Center,
-                        style: { fontSize: "10px", color: "#ccc", overflow: "hidden" }
+                        style: { fontSize: "10px", color: "#ccc", }
                     }),
                 ]
             }),
@@ -141,7 +84,7 @@ function CloseButton(member) {
     })
 }
 
-function ActionBar() {
+const ActionBar = connect(mapStateToProps)(({ selectedMembers }) => {
     return Card({
         children: [
             Row({
@@ -150,7 +93,7 @@ function ActionBar() {
                         children: [
                             FlatButton({
                                 children: [Icon({ name: Icons.arrow_back, style: { color: "#fff" } })],
-                                onClick: () => dispatch(setActivePage(PAGE.CREATE_GROUP))
+                                onClick: () => dispatch(setActivePage(PAGE.HOME))
                             }),
                             Div({
                                 children: [
@@ -159,7 +102,9 @@ function ActionBar() {
                                         style: { fontWeight: "bold" }
                                     }),
                                     Div({
-                                        children: ["Add subject"
+                                        children: [
+                                            selectedMembers.length > 0 ?
+                                                `${selectedMembers.length} selected ` : "Add participants"
                                         ]
                                     })
                                 ],
@@ -176,12 +121,12 @@ function ActionBar() {
         ],
         style: { padding: "8px", backgroundColor: Theme.Colors.PRIMARY, color: "white" }
     })
-}
+})
 
 function Fab() {
     return FlatButton({
         children: [
-            Center({ child: Icon({ name: Icons.done }) })
+            Center({ child: Icon({ name: Icons.arrow_forward }) })
         ],
         style: {
             position: "absolute",
@@ -192,10 +137,8 @@ function Fab() {
             padding: "10px",
             color: "white"
         },
-        onClick: () => { }
+        onClick: () => dispatch(setActivePage(PAGE.CREATE_GROUP2))
     })
 }
 
-const mapStateToProps = (state) => ({ ...state.RGroup })
-
-export default connect(mapStateToProps)(CreateGroup2);
+export default connect(mapStateToProps)(CreateGroupStep1);

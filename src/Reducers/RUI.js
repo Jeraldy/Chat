@@ -18,7 +18,6 @@ const _reducer = createReducer({
                 ...state, activePage: action.payload
             }
         },
-
     }
 })
 

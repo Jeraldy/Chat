@@ -8,9 +8,14 @@ import FlatButton from '../../Utils/FlatButton';
 import Center from "jeddy/layouts/Center";
 import { dispatch } from 'jeddy/jredux';
 import { actions } from '../../Reducers/RChatList';
+import { actions as UIActions} from '../../Reducers/RUI';
 import Avator from '../../Utils/Avator';
 import Card from "jeddy/widgets/Card";
+import { PAGE } from '../../Services/constants';
 const { setSelectedFriend } = actions
+const { setActivePage } = UIActions
+
+const style = { color: "white" }
 
 const ChatBar = (selectedFriend) => {
     return Card({
@@ -20,26 +25,29 @@ const ChatBar = (selectedFriend) => {
                     Row({
                         children: [
                             FlatButton({
-                                children: [Icon({ name: Icons.arrow_back })],
-                                onClick: () => dispatch(setSelectedFriend(null))
+                                children: [Icon({ name: Icons.arrow_back, style })],
+                                onClick: () => {     
+                                    dispatch(setActivePage(PAGE.HOME))
+                                    dispatch(setSelectedFriend(null))
+                                }
                             }),
                             Avator(selectedFriend.image),
                             Div({
-                                children: [Center({ child: selectedFriend.displayName })],
-                                style: { paddingLeft: "8px" }
+                                children: [Center({ child: selectedFriend.displayName, })],
+                                style: { paddingLeft: "8px", ...style }
                             })
                         ],
                     }),
                     Row({
                         children: [
+                            // FlatButton({
+                            //     children: [Icon({ name: Icons.videocam, style }),],
+                            // }),
+                            // FlatButton({
+                            //     children: [Icon({ name: Icons.call, style }),],
+                            // }),
                             FlatButton({
-                                children: [Icon({ name: Icons.videocam }),],
-                            }),
-                            FlatButton({
-                                children: [Icon({ name: Icons.call }),],
-                            }),
-                            FlatButton({
-                                children: [Icon({ name: Icons.more_vert }),],
+                                children: [Icon({ name: Icons.more_horiz, style }),],
                                 style: { marginRight: "10px", }
                             }),
                         ]
@@ -49,11 +57,12 @@ const ChatBar = (selectedFriend) => {
             })
         ],
         style: {
-            padding: "10px",
+            padding: "5px",
             position: "fixed",
             width: "100%",
             paddingLeft: "0px",
-            backgroundColor: "white"
+            backgroundColor: Theme.Colors.PRIMARY,
+            zIndex: 1
         }
     })
 }
