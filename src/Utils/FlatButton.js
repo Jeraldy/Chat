@@ -13,6 +13,7 @@ const FlatButton = (props) => {
             cursor: "pointer",
             ...style
         },
+        class: "flat"
     })
 }
 

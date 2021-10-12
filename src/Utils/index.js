@@ -1,5 +1,7 @@
 import DEFAULT_PROFILE_PICTURE from "../Assets/profile.png";
 import Html from "jeddy/utils/Html";
+import { PAGE } from "../Services/constants";
+import Hammer from "hammerjs"
 export const PROFILE_PICTURE = DEFAULT_PROFILE_PICTURE;
 
 export const randomId = (length = 10) => {
@@ -140,7 +142,7 @@ export const getStableColor = (key) => {
     return color
 }
 
-export const scrollToMessage=(message)=>{
+export const scrollToMessage = (message) => {
     let el = document.getElementById(message.id)
     if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
@@ -154,4 +156,23 @@ export const scrollToMessage=(message)=>{
             }
         }, 5);
     }
+}
+
+export const toggleZooming = (page) => {
+    let vport = document.getElementById("vport")
+    let content = "width=device-width, maximum-scale=1.0"
+    if (page == PAGE.IMAGE_VIEW) {
+        content = "width=device-width, scale=1.0"
+    }
+    vport.setAttribute("content", content)
+}
+
+export const swipeDetector = (id, callback) => {
+    setTimeout(() => {
+        let el = document.getElementById(id)
+        if (el) {
+            var mc = new Hammer(el);
+            mc.on("swipe swipeleft swiperight", (ev) => callback(ev.type));
+        }
+    }, 100)
 }

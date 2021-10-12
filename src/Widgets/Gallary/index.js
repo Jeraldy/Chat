@@ -1,15 +1,12 @@
 import Div from "jeddy/dom/Div"
-import { connect } from "jeddy/jredux";
+import TabActionBar from "./TabActionBar";
+import TabSwitcher from "./TabSwitcher";
 
 const Gallary = () => {
     return Div({
-        children: [
-           
-        ],
+        children: [TabActionBar(), TabSwitcher()],
         style: { position: "relative", height: "100%" }
     })
 }
 
-const mapStateToProps = (state) => ({ ...state.RGroup })
-
-export default connect(mapStateToProps)(Gallary);
+export default Gallary;

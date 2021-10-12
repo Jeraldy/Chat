@@ -45,7 +45,7 @@ const MessageList = ({ messages, showEmoj, showScrollDown, user }) => {
                             padding: "8px",
                             position: "sticky",
                             top: '-6px',
-                            zIndex: 10,
+                            zIndex: 2,
                         },
                         align: RowAlign.Center,
                     }),

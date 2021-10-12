@@ -9,6 +9,8 @@ $ cd jredux-quick-start
 
 # Install the dependencies and run
 $ npm install && npm start
+
+
 ```
 Then open: [http://localhost:9000/](http://localhost:9000/)
 

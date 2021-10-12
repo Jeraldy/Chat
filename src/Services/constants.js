@@ -12,5 +12,12 @@ export const PAGE = {
     SEARCH_MY_CONTACT: "Search contact",
     FOWARD_MESSAGE: "FOWARD_MESSAGE",
     CHAT_ROOM: "CHAT_ROOM",
-    IMAGE_VIEW: "IMAGE_VIEW"
+    IMAGE_VIEW: "IMAGE_VIEW",
+    GALLARY: "Images/Files/Links"
+}
+
+export const GALLARY_TAB = {
+    IMAGES: "MEDIA",
+    DOCUMENTS: "DOCS",
+    LINKS: "LINKS",
 }

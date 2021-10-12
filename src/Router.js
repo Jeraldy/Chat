@@ -8,8 +8,11 @@ import CreateGroupStep2 from "./Widgets/Group/CreateGroupStep2";
 import SearchMyContacts from "./Widgets/ChatList/SearchMyContacts";
 import FowardMessage from "./Widgets/ChatRoom/FowardMessage"
 import ImageViewer from "./Widgets/Gallary/ImageViewer";
+import { toggleZooming } from "./Utils/index";
+import Gallary from "./Widgets/Gallary/index";
 
 const Router = ({ page }) => {
+    toggleZooming(page)
     switch (page) {
         case PAGE.CREATE_GROUP:
             return CreateGroupStep1()
@@ -25,6 +28,8 @@ const Router = ({ page }) => {
             return ChatRoom()
         case PAGE.IMAGE_VIEW:
             return ImageViewer()
+        case PAGE.GALLARY:
+            return Gallary()
     }
     return Div({ children: ["Loading..."] })
 }

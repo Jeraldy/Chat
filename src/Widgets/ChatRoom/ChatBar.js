@@ -8,12 +8,13 @@ import FlatButton from '../../Utils/FlatButton';
 import Center from "jeddy/layouts/Center";
 import { dispatch } from 'jeddy/jredux';
 import { actions } from '../../Reducers/RChatList';
-import { actions as UIActions} from '../../Reducers/RUI';
+import { actions as UIActions } from '../../Reducers/RUI';
 import Avator from '../../Utils/Avator';
 import Card from "jeddy/widgets/Card";
 import { PAGE } from '../../Services/constants';
+import MoreAction from './MoreAction';
 const { setSelectedFriend } = actions
-const { setActivePage } = UIActions
+const { toggleChatActionMenu, setActivePage } = UIActions
 
 const style = { color: "white" }
 
@@ -26,7 +27,7 @@ const ChatBar = (selectedFriend) => {
                         children: [
                             FlatButton({
                                 children: [Icon({ name: Icons.arrow_back, style })],
-                                onClick: () => {     
+                                onClick: () => {
                                     dispatch(setActivePage(PAGE.HOME))
                                     dispatch(setSelectedFriend(null))
                                 }
@@ -47,9 +48,16 @@ const ChatBar = (selectedFriend) => {
                             //     children: [Icon({ name: Icons.call, style }),],
                             // }),
                             FlatButton({
-                                children: [Icon({ name: Icons.more_horiz, style }),],
-                                style: { marginRight: "10px", }
+                                children: [
+                                    Icon({ name: Icons.more_horiz, style }),
+                                ],
+                                style: { marginRight: "10px", },
+                                onClick: () => dispatch(toggleChatActionMenu())
                             }),
+                            Div({
+                                children: [MoreAction()],
+                                style: { position: "relative" }
+                            })
                         ]
                     })
                 ],
@@ -62,7 +70,7 @@ const ChatBar = (selectedFriend) => {
             width: "100%",
             paddingLeft: "0px",
             backgroundColor: Theme.Colors.PRIMARY,
-            zIndex: 1
+            zIndex: 11
         }
     })
 }
